@@ -3,7 +3,7 @@ package com.apu.cryptotemp;
 import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.crypto.engines.GOST28147Engine;
 import org.bouncycastle.crypto.modes.CBCBlockCipher;
-import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
+import org.bouncycastle.crypto.paddings.*;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -21,6 +21,10 @@ public class GOST28147Encription {
         return processEncodingWithoutPadding(true, str, key);
     }
     
+    public byte[] EncodeZeroPadding(byte[] str, byte[] key) {
+        return processEncodingZeroPadding(true, str, key);
+    }
+    
     public String Decode(String str, byte[] key) {
         return processEncoding(false, str, key);
     }
@@ -31,6 +35,10 @@ public class GOST28147Encription {
     
     public byte[] DecodeWithoutPadding(byte[] str, byte[] key) {
         return processEncodingWithoutPadding(false, str, key);
+    }
+    
+    public byte[] DecodeZeroPadding(byte[] str, byte[] key) {
+        return processEncodingZeroPadding(false, str, key);
     }
     
     public String Decode(String str, byte[] key, int length) {
@@ -77,6 +85,20 @@ public class GOST28147Encription {
 //        } catch (CryptoException e) {
 //            System.out.println("Exception: " + e.toString());
 //        }
+        return outBytes;
+    }
+    
+    public byte[] processEncodingZeroPadding(boolean ende, byte[] inBytes, byte[] key) {
+        PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(
+                new GOST28147Engine()), new ZeroBytePadding());
+        cipher.init(ende, new KeyParameter(key));
+        byte[] outBytes = new byte[cipher.getOutputSize(inBytes.length)];
+        int len = cipher.processBytes(inBytes, 0, inBytes.length, outBytes, 0);
+        try {
+            cipher.doFinal(outBytes, len);
+        } catch (CryptoException e) {
+            System.out.println("Exception: " + e.toString());
+        }
         return outBytes;
     }
     

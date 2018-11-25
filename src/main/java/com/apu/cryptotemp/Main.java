@@ -19,7 +19,7 @@ public class Main {
 //        byte[] strBytes = new byte[] {
 //                                (byte)0x01, (byte)0x23, (byte)0x45, (byte)0x67, (byte)0x89, (byte)0xAB, 
 //                                (byte)0xCD, (byte)0xEF};
-        byte[] strBytes = "It is the string for encoding or trying new encription .".getBytes();
+        byte[] strBytes = "It is the string for encoding or trying new encription.".getBytes();
         System.out.println(new String(strBytes));
         
         byte[] encodedBytes = encriptor.Encode(strBytes, key);
@@ -30,14 +30,23 @@ public class Main {
         
         System.out.println("Without padding:");
         
-        byte[] strBytesWP = "It is the string for encoding or trying new encription .".getBytes();
-        System.out.println(new String(strBytesWP));
+//        byte[] strBytesWP = "It is the string for encoding or trying new encription.".getBytes();
+//        System.out.println(new String(strBytesWP));
+//        
+//        byte[] encodedBytesWP = encriptor.EncodeWithoutPadding(strBytesWP, key);
+//        System.out.println(new String(encodedBytesWP));      
+//        
+//        byte[] decodedBytesWP = encriptor.DecodeWithoutPadding(encodedBytesWP, key);       
+//        System.out.println(new String(decodedBytesWP));
         
-        byte[] encodedBytesWP = encriptor.EncodeWithoutPadding(strBytesWP, key);
-        System.out.println(new String(encodedBytesWP));      
+        byte[] strBytesZP = "It is the string for encoding or trying new encription.".getBytes();
+        System.out.println(new String(strBytesZP));
         
-        byte[] decodedBytesWP = encriptor.DecodeWithoutPadding(encodedBytesWP, key);       
-        System.out.println(new String(decodedBytesWP));
+        byte[] encodedBytesZP = encriptor.EncodeZeroPadding(strBytesZP, key);
+        System.out.println(new String(encodedBytesZP));      
+        
+        byte[] decodedBytesZP = encriptor.DecodeZeroPadding(encodedBytesZP, key);       
+        System.out.println(new String(decodedBytesZP));
     }
     
 }
