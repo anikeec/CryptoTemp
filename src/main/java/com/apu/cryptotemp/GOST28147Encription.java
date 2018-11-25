@@ -17,12 +17,20 @@ public class GOST28147Encription {
         return processEncoding(true, str, key);
     }
     
+    public byte[] EncodeWithoutPadding(byte[] str, byte[] key) {
+        return processEncodingWithoutPadding(true, str, key);
+    }
+    
     public String Decode(String str, byte[] key) {
         return processEncoding(false, str, key);
     }
 
     public byte[] Decode(byte[] str, byte[] key) {
         return processEncoding(false, str, key);
+    }
+    
+    public byte[] DecodeWithoutPadding(byte[] str, byte[] key) {
+        return processEncodingWithoutPadding(false, str, key);
     }
     
     public String Decode(String str, byte[] key, int length) {
@@ -43,6 +51,35 @@ public class GOST28147Encription {
         return new String(bytes);//Hex.decode(bytes)
     }
 
+    public byte[] processEncodingWithoutPadding(boolean ende, byte[] inBytes, byte[] key) {
+        CBCBlockCipher cipher = new CBCBlockCipher(
+                new GOST28147Engine());
+        cipher.init(ende, new KeyParameter(key));
+
+        int blocksAmount = inBytes.length/cipher.getBlockSize();
+        if(inBytes.length % cipher.getBlockSize() != 0)
+            blocksAmount++;
+        int blockSize = cipher.getBlockSize();
+        
+        byte[] outBytes = new byte[blocksAmount * blockSize];
+        
+        int inOffset = 0;
+        int outOffset = 0;
+        
+        for(int blockId=0; blockId<blocksAmount; blockId++) {
+            inOffset = blockId * blockSize;
+            outOffset = inOffset;
+            cipher.processBlock(inBytes, inOffset, outBytes, outOffset);
+        }
+//        int len = cipher.processBytes(inBytes, 0, inBytes.length, outBytes, 0);
+//        try {
+//            cipher.doFinal(outBytes, len);
+//        } catch (CryptoException e) {
+//            System.out.println("Exception: " + e.toString());
+//        }
+        return outBytes;
+    }
+    
     public byte[] processEncoding(boolean ende, byte[] inBytes, byte[] key) {
         PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(
                 new GOST28147Engine()));
